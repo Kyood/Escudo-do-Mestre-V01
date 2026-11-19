@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Escudo do Mestre</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#d4a94a;--gold2:#8f6b22;--tx:#f1e4c8;--mu:#b9a37a;--card:rgba(20,12,11,.92);color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:#000;color:var(--tx);font:15px/1.4 Georgia,"Times New Roman",serif;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+main{max-width:980px;margin:0 auto;padding:12px}
+h1{font-family:Cinzel,Georgia,serif;color:var(--gold);text-align:center;letter-spacing:4px;font-size:24px;margin:14px 0}
+h1::before{content:"❖ "}h1::after{content:" ❖"}
+section{background:var(--card);border:2px solid var(--gold2);border-radius:6px;padding:16px 14px 14px;margin:14px 0;box-shadow:inset 0 0 0 3px #000,inset 0 0 0 4px rgba(212,169,74,.4)}
+h2{font-family:Cinzel,Georgia,serif;color:var(--gold);text-align:center;letter-spacing:4px;font-size:14px;border-bottom:1px solid var(--gold2);margin:0 0 12px;padding-bottom:6px}
+h2::before{content:"⚜ "}h2::after{content:" ⚜"}
+button{font:inherit;background:linear-gradient(#7a2018,#4a120d);border:1px solid var(--gold2);color:#f3e2b8;border-radius:6px;padding:6px 12px;cursor:pointer}
+button.g{background:transparent;color:var(--gold)}
+input,select{font:inherit;color:var(--tx);background:transparent;border:0;border-bottom:1px dashed var(--gold2);padding:5px 4px;width:100%}
+select option{background:#1a0b0b}
+label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--mu)}
+.mu{color:var(--mu);font-size:13px}
+.code{font-family:Cinzel,serif;font-size:34px;letter-spacing:8px;color:var(--gold)}
+.rm{display:flex;gap:16px;align-items:center;flex-wrap:wrap;justify-content:space-between}
+.bar{display:flex;gap:6px;flex-wrap:wrap}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}
+.card{border:1px solid var(--gold2);border-radius:8px;padding:10px;background:rgba(0,0,0,.35)}
+.card.off{opacity:.5}
+.hd{display:grid;grid-template-columns:52px 1fr auto;gap:8px;align-items:center;margin-bottom:8px}
+.hd.n{grid-template-columns:1fr auto}
+.hd img{width:52px;height:52px;object-fit:cover;border:2px solid var(--gold);border-radius:6px}
+.sh{width:46px;text-align:center;border:2px solid var(--gold);border-radius:6px 6px 22px 22px;font-size:20px;font-weight:bold;padding:2px 0 6px}
+.sh small{display:block;font-size:9px;color:var(--mu);font-weight:normal}
+.bl{display:grid;grid-template-columns:34px 1fr auto;gap:6px;align-items:center;margin:4px 0;font-size:12px}
+.bv{position:relative;height:22px;border:1px solid var(--gold2);border-radius:4px;background:#140d0c;overflow:hidden;text-align:center}
+.bv::before{content:"";position:absolute;inset:0;width:var(--p);background:var(--c)}
+.bv b{position:relative;line-height:22px;color:#fff;font-size:12px}
+.st{display:flex;gap:2px}
+.st button{padding:0;width:26px;height:22px;font-size:12px}
+.at span,.cdt{display:inline-block;border:1px solid var(--gold2);border-radius:10px;padding:0 7px;margin:2px 2px 0 0;font-size:12px}
+.cdt{border-color:#b3261e;color:#ff9a8f}
+.grid3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px}
+.dice{display:grid;grid-template-columns:70px 90px 70px auto;gap:8px;align-items:end;margin-bottom:8px}
+#log div{padding:3px 0;border-bottom:1px dashed #4a3a1c;font-size:14px}
+#log div:first-child{color:var(--gold);font-weight:bold}
+</style>
+</head>
+<body>
+<main>
+<h1>Escudo do Mestre</h1>
+
+<section><h2>Sala</h2>
+<div class="rm">
+<div><label>Código da sala</label><div class="code" id="code">—</div></div>
+<div class="bar"><button id="cp" class="g">Copiar código</button><button id="nova" class="g">Nova sala</button></div>
+</div>
+<div id="st" class="mu" style="margin-top:8px">Criando sala…</div>
+<div class="mu" style="margin-top:6px">Os jogadores digitam este código na ficha, na seção Escudo do Mestre. Mantenha esta página aberta durante toda a sessão.</div>
+</section>
+
+<section><h2>Jogadores</h2>
+<div id="pl" class="cards"></div>
+<div id="plEmpty" class="mu">Nenhum jogador conectado ainda.</div>
+</section>
+
+<section><h2>Criaturas</h2>
+<div class="grid3"><input id="cn" placeholder="Nome"><input id="cpv" type="number" placeholder="PV"><input id="cdf" type="number" placeholder="Defesa"></div>
+<button id="cadd" class="g" style="margin:8px 0">+ Adicionar criatura</button>
+<div id="cr" class="cards"></div>
+</section>
+
+<section><h2>Dados</h2>
+<div class="dice">
+<div><label>Qtd.</label><input id="rq" type="number" min="1" value="1"></div>
+<div><label>Dado</label><select id="rd"><option>4</option><option>6</option><option>8</option><option>10</option><option>12</option><option selected>20</option><option>100</option></select></div>
+<div><label>Bônus</label><input id="rb" type="number" value="0"></div>
+<button id="rl">Rolar</button>
+</div>
+<div id="log"></div>
+</section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
+const LS=(k,v)=>{try{if(v===undefined)return JSON.parse(localStorage.getItem(k));localStorage.setItem(k,JSON.stringify(v))}catch(e){return null}};
+const PH="data:image/svg+xml;utf8,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" fill="#140d0c"/><circle cx="12" cy="9" r="4" fill="#8f6b22"/><path d="M4 22c0-5 4-8 8-8s8 3 8 8z" fill="#8f6b22"/></svg>');
+const ATR=["FOR","AGI","CON","INT","CAR","SAB"];
+let PL={},CONN={},NPC=LS("esc-npc")||[],LOG=[],peer=null;
+function novoCod(){const a="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";let s="";for(let i=0;i<5;i++)s+=a[Math.floor(Math.random()*a.length)];return s}
+function start(cod){
+ if(peer){try{peer.destroy()}catch(e){}}
+ CONN={};PL={};render();
+ $("code").textContent=cod;LS("esc-cod",cod);$("st").textContent="Criando sala…";
+ if(!window.Peer){$("st").textContent="A biblioteca de conexão não carregou. Verifique a internet e recarregue a página.";return}
+ peer=new Peer("rpgescudo-"+cod);
+ peer.on("open",()=>{$("st").textContent="Sala aberta. Aguardando jogadores…"});
+ peer.on("error",e=>{if(e.type==="unavailable-id")start(novoCod());else $("st").textContent="Erro de conexão: "+e.type});
+ peer.on("disconnected",()=>{$("st").textContent="Reconectando ao servidor…";try{peer.reconnect()}catch(e){}});
+ peer.on("connection",c=>{
+  c.on("open",()=>{c.send({t:"hist",list:LOG.slice(0,30)})});
+  c.on("data",d=>recv(c,d));
+  c.on("close",()=>{for(const id in CONN)if(CONN[id]===c){delete CONN[id];if(PL[id])PL[id].off=true}render()});
+ });
+}
+function recv(c,d){
+ if(!d||!d.t)return;
+ if((d.t==="hello"||d.t==="state")&&d.ficha){const o=PL[d.id]||{};CONN[d.id]=c;PL[d.id]=Object.assign({},o,d.ficha,{off:false,foto:d.ficha.foto!==undefined?d.ficha.foto:o.foto});render()}
+ if(d.t==="roll")addLog(d.n,d.x);
+}
+function addLog(n,x){
+ const e={n,x,ts:Date.now()};LOG.unshift(e);if(LOG.length>60)LOG.pop();renderLog();
+ new Set(Object.values(CONN)).forEach(c=>{try{if(c.open)c.send({t:"log",e})}catch(_){}});
+}
+function renderLog(){$("log").innerHTML=LOG.slice(0,30).map(e=>`<div><b>${esc(e.n)}:</b> ${esc(e.x)}</div>`).join("")}
+function setV(id,k,d){
+ const p=PL[id];if(!p)return;const mx=p[k+"max"]||0;let v=(+p[k]||0)+d;v=Math.max(0,mx?Math.min(mx,v):v);p[k]=v;
+ const c=CONN[id];if(c&&c.open)c.send({t:"set",k,v});render();
+}
+function bar(l,v,m,col,btn){const p=m?Math.max(0,Math.min(100,v/m*100)):0;return `<div class="bl"><span>${l}</span><div class="bv" style="--p:${p}%;--c:${col}"><b>${v}/${m}</b></div><div class="st">${btn}</div></div>`}
+function btns(attr,vals){return [-5,-1,1,5].map(d=>`<button class="g" ${attr} data-d="${d}">${d<0?(d===-5?"«":"‹"):(d===5?"»":"›")}</button>`).join("")}
+function render(){
+ const ids=Object.keys(PL);
+ $("plEmpty").style.display=ids.length?"none":"block";
+ $("pl").innerHTML=ids.map(id=>{const p=PL[id],b=(k)=>btns(`data-pid="${esc(id)}" data-k="${k}"`);
+  return `<div class="card${p.off?" off":""}"><div class="hd"><img src="${p.foto||PH}" alt=""><div><b>${esc(p.nome)}</b><div class="mu">${esc(p.raca)} ${esc(p.classe)} · nível ${p.nivel||1}${p.off?" · offline":""}</div></div><div class="sh">${p.defesa||0}<small>DEF</small></div></div>`
+  +bar("Vida",p.pv||0,p.pvmax||0,"#b3261e",b("pv"))+bar("SAN",p.san||0,p.sanmax||0,"#6d28d9",b("san"))+bar("PM",p.mana||0,p.manamax||0,"#1d5fc4",b("mana"))
+  +`<div class="at">${ATR.map(k=>`<span>${k} ${(p.at&&p.at[k])||0}</span>`).join("")}</div><div>${(p.conds||[]).map(c=>`<span class="cdt">${esc(c)}</span>`).join("")}</div></div>`}).join("");
+ $("cr").innerHTML=NPC.map(n=>`<div class="card"><div class="hd n"><b>${esc(n.n)}</b><div class="sh">${n.df||0}<small>DEF</small></div></div>`
+  +bar("Vida",n.pv,n.max,"#b3261e",btns(`data-nid="${n.id}"`))+`<button class="g" data-nrm="${n.id}" style="margin-top:6px;font-size:12px;padding:2px 8px">Remover</button></div>`).join("");
+}
+document.addEventListener("click",e=>{
+ let b=e.target.closest("[data-pid]");if(b)return setV(b.dataset.pid,b.dataset.k,+b.dataset.d);
+ b=e.target.closest("[data-nid]");if(b){const n=NPC.find(x=>x.id===b.dataset.nid);if(n){n.pv=Math.max(0,Math.min(n.max||1e9,n.pv+ +b.dataset.d));LS("esc-npc",NPC);render()}return}
+ b=e.target.closest("[data-nrm]");if(b){NPC=NPC.filter(x=>x.id!==b.dataset.nrm);LS("esc-npc",NPC);render()}
+});
+$("cadd").onclick=()=>{const n=$("cn").value.trim()||"Criatura",pv=+$("cpv").value||0,df=+$("cdf").value||0;NPC.push({id:"n"+Date.now(),n,pv,max:pv,df});$("cn").value=$("cpv").value=$("cdf").value="";LS("esc-npc",NPC);render()};
+$("rl").onclick=()=>{const q=Math.max(1,+$("rq").value||1),d=+$("rd").value,b=+$("rb").value||0,rs=[];for(let i=0;i<q;i++)rs.push(1+Math.floor(Math.random()*d));const t=rs.reduce((x,y)=>x+y,0)+b;addLog("Mestre",`${q}d${d} [${rs.join(", ")}]${b?(b>0?" + ":" − ")+Math.abs(b):""} = ${t}`)};
+$("cp").onclick=()=>{try{navigator.clipboard.writeText($("code").textContent);$("st").textContent="Código copiado."}catch(e){}};
+$("nova").onclick=()=>{if(confirm("Criar uma nova sala? Os jogadores precisarão do novo código."))start(novoCod())};
+render();renderLog();start(LS("esc-cod")||novoCod());
+</script>
+</body>
+</html>

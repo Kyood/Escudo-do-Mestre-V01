@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ficha de Personagem</title>
+<style>
+:root{--bg:#000;--card:rgba(26,11,10,.82);--tx:#f5e1cc;--mu:#c9a183;--ac:#e0643f;--bd:rgba(217,162,122,.3);--in:rgba(10,4,4,.6);color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#000;--card:rgba(26,11,10,.82);--tx:#f5e1cc;--mu:#c9a183;--ac:#e0643f;--bd:rgba(217,162,122,.3);--in:rgba(10,4,4,.6);color-scheme:dark;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#000;--card:rgba(26,11,10,.82);--tx:#f5e1cc;--mu:#c9a183;--ac:#e0643f;--bd:rgba(217,162,122,.3);--in:rgba(10,4,4,.6);color-scheme:dark;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.4 Georgia,"Times New Roman",serif}
+body::before{content:"";position:fixed;inset:0;z-index:-1;background:#000}
+main{max-width:760px;margin:0 auto;padding:12px}
+h1{font-size:20px;margin:8px 0;color:var(--ac);letter-spacing:.5px}
+h2{font-size:14px;text-transform:uppercase;letter-spacing:2px;color:var(--ac);margin:0 0 10px;border-bottom:1px solid var(--bd);padding-bottom:6px}
+section{background:var(--card);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1px solid var(--bd);border-radius:10px;padding:12px;margin:12px 0}
+.bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:4px}
+button{font:inherit;background:#b3301f;color:#fff;border:0;border-radius:6px;padding:6px 12px;cursor:pointer}
+button.g{background:transparent;color:var(--ac);border:1px solid var(--ac)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+label{display:block;font-size:12px;color:var(--mu)}
+input,textarea,select{width:100%;font:inherit;color:var(--tx);background:var(--in);border:1px solid var(--bd);border-radius:6px;padding:6px 8px}
+textarea{min-height:64px;resize:vertical}
+.pair{display:flex;gap:4px;align-items:center}
+.pair span{color:var(--mu)}
+.pool{font-size:13px;color:var(--mu);margin-bottom:8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.pool input{width:70px}
+.pool b{color:var(--tx)}
+.row{display:grid;grid-template-columns:minmax(0,1fr) 64px 34px 34px 28px 34px;align-items:center;gap:6px;padding:4px 0;border-bottom:1px dashed var(--bd)}
+.row .n{min-width:0}
+.row .n small{color:var(--mu)}
+.row .v{min-width:26px;text-align:center;font-weight:bold}
+.row button{padding:2px 0;width:100%}
+.row select{width:100%;padding:2px 4px}
+.sp{border:1px solid var(--bd);border-radius:8px;padding:8px;margin-bottom:8px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.sp textarea{grid-column:1/-1;min-height:48px}
+.sp .ac{grid-column:1/-1;display:flex;gap:6px}
+.sp.wp{grid-template-columns:minmax(0,1fr) 110px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.chips button{padding:4px 10px;border-radius:14px;font-size:13px}
+.wi{display:grid;grid-template-columns:minmax(0,1fr) 40px;gap:8px;align-items:center;border-bottom:1px dashed var(--bd);padding:6px 0}
+.wi small{color:var(--mu);display:block;font-size:12px}
+.am{grid-column:1/-1;display:flex;align-items:center;gap:6px}
+.am label{margin:0;white-space:nowrap}
+.am input{width:64px}
+.am button{margin-left:auto}
+button:disabled{opacity:.4;cursor:not-allowed}
+.eqr{display:grid;grid-template-columns:minmax(0,1fr) 56px 64px 34px;gap:6px;align-items:center;padding:4px 0;border-bottom:1px dashed var(--bd)}
+.eqr input{width:100%;padding:4px 6px}
+.eqr button{padding:2px 0;width:100%}
+#eqlist{max-height:50vh;overflow-y:auto;margin:6px 0}
+.sp.jn{grid-template-columns:minmax(0,1fr) 150px}
+.sp.jn textarea{min-height:90px}
+.wi button{padding:4px 0;width:100%;font-size:18px}
+#wlist,#mlist{max-height:50vh;overflow-y:auto;margin:6px 0}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));column-gap:20px}
+.dice{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px}
+#log{font-size:14px;margin-top:8px}
+#log div{padding:3px 0;border-bottom:1px dashed var(--bd)}
+#log div:first-child{font-weight:bold;color:var(--ac)}
+#io{display:none}
+
+
+/* ===== layout medieval ===== */
+:root{--gold:#d4a94a;--gold2:#8f6b22;--tx:#f1e4c8;--mu:#b9a37a;--card:rgba(20,12,11,.9);--bd:#6b4f1c}
+main{max-width:760px}
+h1{font-family:Cinzel,"Palatino Linotype",Georgia,serif;color:var(--gold);text-align:center;letter-spacing:4px;font-size:24px;text-shadow:0 2px 8px #000}
+h1::before{content:"❖ "}h1::after{content:" ❖"}
+section{border:2px solid var(--gold2);border-radius:6px;box-shadow:inset 0 0 0 3px #000,inset 0 0 0 4px rgba(212,169,74,.4),0 4px 14px rgba(0,0,0,.6);position:relative}
+section::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 7px 7px,var(--gold) 2.5px,transparent 3.5px),radial-gradient(circle at calc(100% - 7px) 7px,var(--gold) 2.5px,transparent 3.5px),radial-gradient(circle at 7px calc(100% - 7px),var(--gold) 2.5px,transparent 3.5px),radial-gradient(circle at calc(100% - 7px) calc(100% - 7px),var(--gold) 2.5px,transparent 3.5px)}
+h2{font-family:Cinzel,"Palatino Linotype",Georgia,serif;color:var(--gold);text-align:center;letter-spacing:4px;border-bottom:1px solid var(--gold2);font-size:14px}
+h2::before{content:"⚜ "}h2::after{content:" ⚜"}
+label{text-transform:uppercase;letter-spacing:1px;font-size:11px;color:var(--mu)}
+input,textarea,select{border-bottom:1px dashed var(--gold2)}
+textarea{border:1px dashed var(--gold2)}
+button{background:linear-gradient(#7a2018,#4a120d);border:1px solid var(--gold2);color:#f3e2b8}
+button.g{background:transparent;color:var(--gold);border:1px solid var(--gold2)}
+.top{display:grid;gap:0}
+.hd{display:grid;grid-template-columns:84px 1fr;gap:10px;align-items:start}
+.hf{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.foto{display:block;width:84px;height:84px;border:2px solid var(--gold);border-radius:6px;overflow:hidden;cursor:pointer;background:#140d0c;margin:0}
+.foto img{width:100%;height:100%;object-fit:cover;display:block}
+#attrs{position:relative;width:300px;max-width:100%;height:320px;margin:6px auto 10px;display:block}
+#attrs::before{content:"ATRIBUTOS";position:absolute;left:50%;top:50%;width:96px;height:96px;margin:-48px 0 0 -48px;border:2px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:Cinzel,serif;font-size:11px;letter-spacing:2px;color:var(--gold);box-shadow:0 0 0 5px rgba(212,169,74,.15)}
+#attrs::after{content:"";position:absolute;left:50%;top:50%;width:216px;height:216px;margin:-108px 0 0 -108px;border:2px dashed var(--gold2);border-radius:50%}
+#attrs .row{position:absolute;left:50%;top:50%;width:100px;height:100px;margin:-50px 0 0 -50px;z-index:1;grid-template-columns:repeat(3,20px);justify-content:center;column-gap:2px;grid-template-rows:auto auto auto;align-content:center;row-gap:2px;justify-items:center;align-items:center;padding:6px 8px 12px;border:2px solid var(--gold);border-radius:50%;background:radial-gradient(circle,#2e1b15,#120c0b);text-align:center}
+#attrs .row:nth-child(1){transform:translate(0,-108px)}
+#attrs .row:nth-child(2){transform:translate(94px,-54px)}
+#attrs .row:nth-child(3){transform:translate(94px,54px)}
+#attrs .row:nth-child(4){transform:translate(0,108px)}
+#attrs .row:nth-child(5){transform:translate(-94px,54px)}
+#attrs .row:nth-child(6){transform:translate(-94px,-54px)}
+#attrs .row>.n{font-size:0;grid-column:1/-1;grid-row:1}
+#attrs .row>.n small{font-size:11px;font-family:Cinzel,serif;letter-spacing:1px;color:var(--gold)}
+#attrs .row>span:nth-child(2){display:none}
+#attrs .row>.v{grid-column:1/-1;grid-row:2;font-size:22px;line-height:1;min-width:0}
+#attrs .row>button{width:20px;height:18px;padding:0;font-size:10px;line-height:1;min-width:0}
+#attrs .row>button[data-d="-1"]{grid-row:3;grid-column:1}
+#attrs .row>button[data-roll]{grid-row:3;grid-column:2}
+#attrs .row>button[data-d="1"]{grid-row:3;grid-column:3}
+.bar3{display:flex;align-items:center;gap:4px;margin:4px 0 10px}
+.bar3 button{padding:0;width:30px;height:38px;font-size:16px}
+.bv{flex:1;position:relative;height:38px;border:2px solid var(--gold2);border-radius:6px;background:#140d0c;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.bv::before{content:"";position:absolute;inset:0;width:var(--p,0%);background:var(--c);transition:width .25s}
+.bv .t{position:relative;display:flex;align-items:center;font-weight:bold;color:#fff}
+.bv input{width:46px;text-align:center;background:transparent;border:0;color:#fff;font-weight:bold;font-size:16px;padding:0;-moz-appearance:textfield}
+.bv input::-webkit-inner-spin-button,.bv input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.df{display:flex;gap:14px;align-items:center}
+.ttl{font-family:Cinzel,serif;color:var(--gold);letter-spacing:3px;font-size:18px}
+.mu{color:var(--mu);font-size:13px}
+.shield{position:relative;width:96px;height:112px;flex:none;background:var(--gold);clip-path:polygon(0 0,100% 0,100% 60%,50% 100%,0 60%)}
+.shield::before{content:"";position:absolute;inset:3px;background:#140d0c;clip-path:polygon(0 0,100% 0,100% 60%,50% 100%,0 60%)}
+.shield input{position:relative;display:block;width:100%;margin-top:22px;border:0;background:transparent;text-align:center;font-size:36px;font-weight:bold;color:var(--tx);padding:0}
+#skills{display:block}
+#skills .row{grid-template-columns:30px minmax(0,1fr) 62px 30px 28px 30px;gap:5px}
+#skills .row>button[data-roll]{order:-1}
+#skills .row.t .n,#skills .row.t .v{color:#8cbcff}
+#skills .row.b .n,#skills .row.b .v{color:#86e08f}
+@media (min-width:900px){
+main{max-width:1100px}
+.top{grid-template-columns:minmax(340px,420px) minmax(0,1fr);column-gap:22px;align-items:start}
+.rest{display:grid;grid-template-columns:1fr 1fr;column-gap:22px;align-items:start}
+.rest>section:has(#conds){grid-column:1/-1}}
+#attrs+.pool{justify-content:center;text-align:center}
+.up{grid-column:1/-1;display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mu)}
+.up button{padding:0;width:30px;height:28px}
+.up b{color:var(--tx)}
+.mu{color:var(--mu);font-size:13px}
+#escLog div{padding:3px 0;border-bottom:1px dashed var(--bd)}
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<main>
+<h1>Ficha de Personagem</h1>
+<select id="slot" style="margin-bottom:6px"></select>
+<div class="bar">
+<button id="desc">Descansar</button>
+<button id="novo" class="g">Novo personagem</button>
+<button id="del" class="g">Excluir</button>
+<button id="exp" class="g">Exportar</button>
+<button id="imp" class="g">Importar</button>
+</div>
+<input type="file" id="file" accept=".json,application/json" style="display:none">
+
+<div class="top"><div class="col"><section><h2>Personagem</h2>
+<div class="hd"><div><label class="foto" title="Toque para escolher a imagem"><img id="foto" alt=""><input type="file" id="fotoIn" accept="image/*" style="display:none"></label><div style="display:flex;gap:3px;margin-top:4px"><button class="g" id="fotoBtn" style="flex:1;font-size:11px;padding:3px 0">Adicionar foto</button><button class="g" id="fotoDel" style="width:26px;font-size:11px;padding:3px 0" title="Remover foto">✕</button></div></div>
+<div class="hf"><div style="grid-column:1/-1"><label>Personagem</label><input data-f="nome"></div>
+<div><label>Classe</label><select data-f="classe"><option value="">Selecione…</option><option>Mago</option><option>Berserk</option><option>Guerreiro</option><option>Mercenário</option><option>Ladino</option><option>Clérigo</option><option>Atirador</option><option>Paladino</option><option>Bardo</option></select></div><div><label>Raça</label><select data-f="raca"><option value="">Selecione…</option><option>Humano</option><option>Anão</option><option>Elfo</option><option>Goblin</option><option>Orc</option><option>Tiefling</option></select></div></div></div>
+<div class="grid" style="margin-top:8px"><div><label>Nível</label><input data-f="nivel" type="number" min="1" placeholder="1"></div></div>
+<div id="deusBox" style="display:none;margin-top:8px"><label>Deus servido</label><input data-f="deus"></div></section><section><h2>Atributos</h2>
+<div id="attrs"></div>
+<div class="pool">Total de pontos <input id="atTotal" readonly> Máx. por atributo <input id="atMax" readonly> Gastos: <b id="atGasto">0</b> Disponíveis: <b id="atDisp">0</b></div></section><section><h2>Vitalidade</h2><label>Vida</label><div class="bar3"><button class="g" data-bar="pv" data-step="-5">«</button><button class="g" data-bar="pv" data-step="-1">‹</button><div class="bv" id="bVida" style="--c:#b3261e"><span class="t"><input data-f="pv" type="number">/<input id="pvmax" readonly></span></div><button class="g" data-bar="pv" data-step="1">›</button><button class="g" data-bar="pv" data-step="5">»</button></div><label>Sanidade</label><div class="bar3"><button class="g" data-bar="san" data-step="-5">«</button><button class="g" data-bar="san" data-step="-1">‹</button><div class="bv" id="bSan" style="--c:#6d28d9"><span class="t"><input data-f="san" type="number">/<input id="sanmax" readonly></span></div><button class="g" data-bar="san" data-step="1">›</button><button class="g" data-bar="san" data-step="5">»</button></div><label>Mana (PM)</label><div class="bar3"><button class="g" data-bar="mana" data-step="-5">«</button><button class="g" data-bar="mana" data-step="-1">‹</button><div class="bv" id="bMana" style="--c:#1d5fc4"><span class="t"><input data-f="mana" type="number">/<input id="manamax" readonly></span></div><button class="g" data-bar="mana" data-step="1">›</button><button class="g" data-bar="mana" data-step="5">»</button></div>
+<div class="grid" style="margin-top:8px"><div><label>Multiplicador PV/SAN</label><input data-f="mult" type="number" placeholder="5"></div><div><label>Multiplicador PM (× INT)</label><input data-f="multpm" type="number" placeholder="5"></div></div></section><section><h2>Defesa</h2>
+<div class="df"><div class="shield"><input id="defesa" readonly></div><div><b class="ttl">Defesa</b><div id="defTxt" class="mu"></div></div></div>
+<div class="grid" style="margin-top:8px"><div><label>Armadura</label><select data-f="armadura" id="armSel"></select></div><div><label>Escudo</label><select data-f="escudo"><option value="">Sem escudo</option><option value="1">Com escudo (+2)</option></select></div></div></section></div><div class="col"><section><h2>Perícias</h2>
+<div class="pool">Total de pontos <input id="skTotal" readonly> Máx. por perícia <input id="skMax" readonly> Gastos: <b id="skGasto">0</b> Disponíveis: <b id="skDisp">0</b></div>
+<div id="skills"></div></section></div></div>
+<div class="rest">
+<section><h2>Condições</h2>
+<div class="chips" id="conds"></div></section>
+<section><h2>Informações</h2>
+<div class="grid">
+<div><label>Idade</label><select data-f="idade"><option value="">Selecione…</option><option>Idoso</option><option>Adulto</option><option>Adolescente</option><option>Criança</option><option>Bebê</option></select></div>
+<div><label>Sexo</label><input data-f="sexo"></div>
+<div><label>Origem</label><input data-f="origem"></div>
+<div><label>Ocupação</label><input data-f="ocup"></div>
+<div><label>Maior medo</label><input data-f="medo"></div>
+</div></section>
+<section><h2>Rolador de dados</h2>
+<div class="dice">
+<div><label>Quantidade</label><input id="dq" type="number" min="1" value="1"></div>
+<div><label>Dado</label><select id="dd"><option>4</option><option>6</option><option>8</option><option>10</option><option>12</option><option selected>20</option><option>100</option></select></div>
+<div><label>Bônus</label><input id="db" type="number" value="0"></div>
+</div>
+<button id="roll">Rolar</button>
+<span style="font-size:12px;color:var(--mu)"> Use o 🎲 ao lado de cada atributo ou perícia. Perícia rola 1d20 + perícia + atributo escolhido.</span>
+<div id="log"></div></section>
+<section><h2>Armas de combate</h2>
+<div id="weapons"></div>
+<button id="addWp" class="g">+ Adicionar arma</button>
+<div id="wcat" style="display:none;margin-top:8px">
+<input id="wq" type="search" placeholder="Buscar arma, dano ou propriedade…">
+<div class="chips" id="wgrp"></div>
+<div id="wlist"></div>
+<div class="bar"><button id="wcustom" class="g">Corpo a corpo em branco</button><button id="wcustom2" class="g">À distância em branco</button><button id="wclose" class="g">Fechar lista</button></div>
+</div></section>
+<section><h2>Magias</h2>
+<div id="spells"></div>
+<button id="addSp" class="g">+ Adicionar magia</button>
+<div id="mcat" style="display:none;margin-top:8px">
+<input id="mq" type="search" placeholder="Buscar magia…">
+<div class="chips" id="mgrp"></div>
+<div id="mlist"></div>
+<div class="bar"><button id="mcustom" class="g">Magia em branco</button><button id="mclose" class="g">Fechar lista</button></div>
+</div></section>
+<section><h2>Habilidades</h2>
+<label>Habilidades raciais</label><textarea data-f="hRacial"></textarea>
+<label>Habilidades de classe</label><textarea data-f="hClasse"></textarea>
+<label>Habilidades adquiridas</label><textarea data-f="hAdq"></textarea></section>
+<section><h2>Inventário</h2>
+<div class="grid">
+<div><label>Arma principal</label><input data-f="armaP"></div>
+<div><label>Arma secundária</label><input data-f="armaS"></div>
+<div><label>Dinheiro</label><input data-f="dinheiro"></div>
+</div>
+<h2 style="margin-top:14px">Equipamentos</h2>
+<div id="eqs"></div>
+<div class="pool">Peso total: <b id="eqpeso">0</b> kg</div>
+<button id="addEq" class="g">+ Adicionar equipamento</button>
+<div id="eqcat" style="display:none;margin-top:8px">
+<input id="eqq" type="search" placeholder="Buscar equipamento…">
+<div class="chips" id="eqgrp"></div>
+<div id="eqlist"></div>
+<div class="bar"><button id="eqcustom" class="g">Item em branco</button><button id="eqclose" class="g">Fechar lista</button></div>
+</div>
+<label style="margin-top:10px">Outros itens e anotações</label><textarea data-f="itens"></textarea></section>
+<section><h2>História</h2>
+<label>Aparência</label><textarea data-f="aparencia"></textarea>
+<label>Personalidade</label><textarea data-f="personalidade"></textarea>
+<label>História</label><textarea data-f="historia"></textarea>
+<label>Objetivo</label><textarea data-f="objetivo"></textarea>
+<label>Aliados e contatos</label><textarea data-f="aliados"></textarea></section>
+<section><h2>Escudo do Mestre</h2>
+<div class="grid"><div><label>Código da sala</label><input id="escCod" maxlength="8" placeholder="ex.: K7P2Q" style="text-transform:uppercase"></div></div>
+<div class="bar" style="margin-top:8px;align-items:center"><button id="escBtn">Conectar</button><span id="escSt" class="mu">Desconectado</span></div>
+<div id="escLog" style="margin-top:8px;font-size:14px"></div></section>
+
+<section><h2>Diário de sessão</h2>
+<label>Anotações gerais</label><textarea data-f="notas"></textarea>
+<div style="margin:10px 0 6px"><button id="addJn" class="g">+ Nova entrada</button></div>
+<div id="jn"></div></section>
+</div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script>
+const ATTR=[["FOR","Força"],["AGI","Agilidade"],["CON","Constituição"],["INT","Inteligência"],["CAR","Carisma"],["SAB","Sabedoria"]];
+const SK=["Atletismo","Artes","Adestramento","Conhecimento","Culinária","Diplomacia","Enganação","Fortitude","Furtividade","Intimidação","Investigação","Intuição","Iniciativa","Luta","Ladinagem","Medicina","Ofício","Percepção","Pontaria","Pilotagem","Reflexos","Religião","Sobrevivência","Vontade"];
+const KEY="ficha-rpg-v1";
+const _h={Idoso:25,Adulto:50,Adolescente:35,"Criança":25,"Bebê":10},_g={Idoso:45,Adulto:70,Adolescente:55,"Criança":35,"Bebê":10};
+const PVR={Humano:_h,"Anão":_g,Goblin:_h,Orc:_g,Tiefling:_g,Elfo:{Adulto:35,Adolescente:30,"Criança":5}};
+function base(){const t=PVR[S.f.raca];return t&&t[S.f.idade]!=null?t[S.f.idade]:null}
+const CL={Mago:{hp:10,mg:50,sk:["Conhecimento","Vontade"]},Berserk:{hp:25,mg:5,sk:["Luta","Atletismo"]},Guerreiro:{hp:25,mg:5,sk:["Fortitude","Reflexos"]},"Mercenário":{hp:25,mg:5,sk:["Conhecimento","Investigação"]},Ladino:{hp:15,mg:10,sk:["Furtividade","Ladinagem"]},"Clérigo":{hp:10,mg:30,sk:["Religião","Medicina"]},Atirador:{hp:20,mg:5,sk:["Pontaria","Percepção"]},Paladino:{hp:25,mg:30,sk:["Fortitude","Religião"]},Bardo:{hp:15,mg:15,sk:["Artes","Diplomacia"]}};
+const RAB={"Humano":"Determinação: uma vez por descanso, rola de novo um teste e fica com o melhor resultado.","Anão":"Pele de Pedra: +5 em Fortitude e metade do dano de veneno.","Elfo":"Sentidos Aguçados: +5 em Percepção e não precisa dormir para descansar.","Goblin":"Escapadiça: +5 em Furtividade e pode fugir do combate sem sofrer ataque.","Orc":"Resistência Implacável: uma vez por descanso, ao chegar a 0 PV fica com 1 PV.","Tiefling":"Herança Infernal: metade do dano de fogo e conhece o truque Raio de Fogo."};
+const CAB={"Mago":"Domínio dos Truques: truques não gastam mana.","Berserk":"Fúria: por 3 rodadas causa +1d6 de dano, mas fica com −2 de Defesa.","Guerreiro":"Segundo Fôlego: uma vez por descanso, cura 1d10 + o nível em PV.","Mercenário":"Alvo Marcado: marca um inimigo e causa +1d4 de dano nele.","Ladino":"Ataque Furtivo: +1d6 de dano ao atacar de surpresa ou com um aliado ao lado do alvo.","Clérigo":"Canalizar Divindade: gasta 3 PM para curar um aliado em 1d8 + SAB.","Atirador":"Mira Precisa: gasta 1 munição extra para causar +1d6 de dano.","Paladino":"Mãos Sagradas: uma vez por descanso, cura 5 × o nível em PV a quem tocar.","Bardo":"Inspiração: um aliado soma 1d6 em um teste, uma vez por cena."};
+const RBON={"Anão":["Fortitude"],"Elfo":["Percepção"],"Goblin":["Furtividade"]};
+function autoAbil(f,txt){const old=S.f[f+"Auto"]||"";let cur=S.f[f]||"";if(old&&cur.startsWith(old))cur=cur.slice(old.length).replace(/^\n+/,"");S.f[f]=txt+(cur?"\n\n"+cur:"");S.f[f+"Auto"]=txt}
+function cls(){return CL[S.f.classe]||{hp:0,mg:0,sk:[]}}
+function manaMax(){return (S.f.raca==="Humano"?5:0)+cls().mg+Math.floor((+S.a.INT||0)/2)*(+S.f.multpm||5)}
+function bonus(k){return (cls().sk.includes(k)?5:0)+((RBON[S.f.raca]||[]).includes(k)?5:0)}
+function ui(){const el=document.querySelector('[data-f="idade"]'),l=S.f.raca==="Elfo"?["Adulto","Adolescente","Criança"]:["Idoso","Adulto","Adolescente","Criança","Bebê"];
+ if(el.dataset.l!==l.join()){el.dataset.l=l.join();el.innerHTML=`<option value="">Selecione…</option>`+l.map(x=>`<option>${x}</option>`).join("");if(!l.includes(S.f.idade))S.f.idade="";el.value=S.f.idade||""}
+ $("deusBox").style.display=S.f.classe==="Clérigo"?"block":"none"}
+const DEF={Atletismo:"FOR",Artes:"CAR",Adestramento:"CAR",Conhecimento:"INT",Culinária:"SAB",Diplomacia:"CAR",Enganação:"CAR",Fortitude:"CON",Furtividade:"AGI",Intimidação:"CAR",Investigação:"INT",Intuição:"SAB",Iniciativa:"AGI",Luta:"FOR",Ladinagem:"AGI",Medicina:"INT",Ofício:"INT",Percepção:"SAB",Pontaria:"AGI",Pilotagem:"AGI",Reflexos:"AGI",Religião:"SAB",Sobrevivência:"SAB",Vontade:"SAB"};
+let S={f:{},a:{},s:{}};
+const $=id=>document.getElementById(id);
+function load(){try{const r=localStorage.getItem(KEY);if(r){const o=JSON.parse(r);if(o&&o.f)S=Object.assign({f:{},a:{},s:{}},o)}}catch(e){}}
+let DB={cur:null,list:{}};
+function save(){try{DB.list[DB.cur]=S;localStorage.setItem("ficha-rpg-v2",JSON.stringify(DB))}catch(e){}}
+function loadDB(){try{const r=localStorage.getItem("ficha-rpg-v2");if(r){const o=JSON.parse(r);if(o&&o.list)DB=o}}catch(e){}
+ if(!DB.cur||!DB.list[DB.cur]){let old=null;try{const r=localStorage.getItem(KEY);if(r)old=JSON.parse(r)}catch(e){}
+  const id="p"+Date.now();DB.list[id]=old&&old.f?old:{f:{},a:{},s:{}};DB.cur=id}
+ S=DB.list[DB.cur]}
+function sum(o){return Object.values(o).reduce((x,y)=>x+(+y||0),0)}
+function totals(){
+ const ag=sum(S.a),sg=sum(S.s);
+ $("atGasto").textContent=ag;$("skGasto").textContent=sg;
+ const nv=Math.max(1,+S.f.nivel||1),aT=10+2*(nv-1),sT=15+5*(nv-1);
+ $("atTotal").value=aT;$("skTotal").value=sT;$("atMax").value=capA();$("skMax").value=capS();
+ $("atDisp").textContent=aT-ag;$("skDisp").textContent=sT-sg;
+ $("pvmax").value=pvMax();$("manamax").value=manaMax();$("defesa").value=defesa();$("sanmax").value=sanMax();
+}
+function list(id,items,store){
+ $(id).innerHTML=items.map(it=>{const at=Array.isArray(it),n=at?it[1]:it,k=at?it[0]:it;
+ const sel=at?"<span></span>":`<select data-b="${k}">${ATTR.map(a=>`<option${(S.b[k]||DEF[k])===a[0]?" selected":""}>${a[0]}</option>`).join("")}</select>`;
+ return `<div class="row${store==="s"?(bonus(k)?" b":((S.s[k]||0)>0?" t":"")):""}"><span class="n">${n}${at?` <small>${k}</small>`:""}${!at&&bonus(k)?` <small style="color:var(--ac)">+${bonus(k)}</small>`:""}</span>${sel}<button class="g" data-roll="${k}" data-st="${store}" data-n="${n}" title="Rolar">🎲</button><button class="g" data-s="${store}" data-k="${k}" data-d="-1">−</button><span class="v" id="v-${store}-${k}">${(S[store][k]||0)+(store==="s"?bonus(k):0)}</span><button class="g" data-s="${store}" data-k="${k}" data-d="1">+</button></div>`}).join("");
+}
+function fillInputs(){document.querySelectorAll("[data-f]").forEach(e=>{e.value=S.f[e.dataset.f]??""})}
+function build(){S.c=S.c||{};S.q=S.q||[];S.j=S.j||[];conds();eqs();jn();ui2();S.b=S.b||{};S.m=S.m||[];S.w=S.w||[];weapons();spells();list("attrs",ATTR,"a");list("skills",SK,"s");ui();fillInputs();totals()}
+document.addEventListener("input",e=>{const k=e.target.dataset&&e.target.dataset.f;if(k){S.f[k]=e.target.value;if(k==="nome")slots();if(k==="raca"||k==="idade"||k==="classe"){ui();if(k==="raca")autoAbil("hRacial",RAB[S.f.raca]||"");if(k==="classe")autoAbil("hClasse",CAB[S.f.classe]||"");if(k==="classe"||k==="raca")list("skills",SK,"s");humano();fillInputs()}save();totals()}});
+document.addEventListener("click",e=>{
+ const b=e.target.closest("button[data-s]");
+ if(b){const s=b.dataset.s,k=b.dataset.k;const lim=s==="a"?capA():capS(),pool=+$(s==="a"?"atDisp":"skDisp").textContent,d=+b.dataset.d;if(d>0&&pool<=0)return;S[s][k]=Math.min(lim,Math.max(0,(+S[s][k]||0)+d));$(`v-${s}-${k}`).textContent=S[s][k]+(s==="s"?bonus(k):0);if(s==="s"){const r=b.closest(".row");r.classList.toggle("t",!bonus(k)&&(S.s[k]||0)>0)}save();totals();return}
+ const r=e.target.closest("[data-roll]");
+ if(r){const k=r.dataset.roll;
+  if(r.dataset.st==="a")rollDice(1,20,+S.a[k]||0,r.dataset.n);
+  else{const at=S.b[k]||DEF[k]||"FOR";rollDice(1,20,(+S.s[k]||0)+bonus(k)+(+S.a[at]||0),`${k} (${at})`)}}
+});
+function rollDice(q,d,m,label){
+ const rs=[];for(let i=0;i<q;i++)rs.push(1+Math.floor(Math.random()*d));
+ const t=rs.reduce((x,y)=>x+y,0)+m;
+ const txt=`${label?label+": ":""}${q}d${d} [${rs.join(", ")}]${m?(m>0?" + ":" − ")+Math.abs(m):""} = ${t}`;
+ const div=document.createElement("div");div.textContent=txt;$("log").prepend(div);
+ while($("log").children.length>8)$("log").lastChild.remove();
+}
+function rollExpr(s){s=String(s||"").trim();if(!s)return "";
+ const re=/([+-]?)\s*(?:(\d*)d(\d+)|(\d+))/gi;let m,tot=0,parts=[],ok=false;
+ while((m=re.exec(s))){ok=true;const sg=m[1]==="-"?-1:1;
+  if(m[3]){const q=+m[2]||1,d=+m[3],rs=[];for(let i=0;i<q;i++)rs.push(1+Math.floor(Math.random()*d));tot+=sg*rs.reduce((x,y)=>x+y,0);parts.push(`${sg<0?"−":""}${q}d${d} [${rs.join(", ")}]`)}
+  else{tot+=sg*+m[4];parts.push(`${sg<0?"−":"+"}${m[4]}`)}}
+ return ok?` · Dano: ${parts.join(" ")} = ${tot}`:""}
+function capA(){return 5+Math.floor((Math.max(1,+S.f.nivel||1)-1)/2)}
+function capS(){return 5+Math.max(1,+S.f.nivel||1)}
+function sanMax(){return Math.floor((+S.a.SAB||0)/2)*(+S.f.mult||5)}
+function pvMax(){return (base()||0)+cls().hp+Math.floor((+S.a.CON||0)/2)*(+S.f.mult||5)}
+function humano(){if(base()!=null||CL[S.f.classe]){S.f.pv=pvMax();S.f.mana=manaMax();fillInputs()}}
+function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;")}
+function danoUp(m){const u=+m.up||0,s=String(m.dano||"").trim();if(!s||!u)return s;const r=/(\d*)d(\d+)/i;if(r.test(s))return s.replace(r,(x,q,f)=>((+q||1)+u)+"d"+f);return s+"+"+u}
+function spells(){$("spells").innerHTML=S.m.map((m,i)=>`<div class="sp"><div style="grid-column:1/-1"><label>Magia</label><input data-m="${i}" data-p="n" value="${esc(m.n)}"></div><div><label>Nível</label><input data-m="${i}" data-p="l" type="number" min="0" placeholder="0" value="${esc(m.l)}"></div><div><label>Custo (PM)</label><input data-m="${i}" data-p="c" type="number" min="0" value="${esc(m.c)}"></div><div><label>Dano</label><input data-m="${i}" data-p="dano" placeholder="2d6" value="${esc(m.dano)}"></div><div class="up"><span>Melhoria</span><button class="g" data-up="${i}" data-ud="-1">−</button><b>${m.up||0}</b><button class="g" data-up="${i}" data-ud="1">+</button><span>→ dano <b>${esc(danoUp(m))||"sem dano"}</b></span></div><textarea data-m="${i}" data-p="d" placeholder="Descrição / efeito">${esc(m.d)}</textarea><div class="ac"><button data-use="${i}">Usar</button><button class="g" data-del="${i}">Remover</button></div></div>`).join("")}
+document.addEventListener("input",e=>{const i=e.target.dataset&&e.target.dataset.m;if(i!==undefined&&S.m[i]){S.m[i][e.target.dataset.p]=e.target.value;save()}});
+document.addEventListener("click",e=>{const u=e.target.closest("[data-use]"),d=e.target.closest("[data-del]");
+ if(u){const m=S.m[u.dataset.use],c=+m.c||0,cur=+S.f.mana||0,div=document.createElement("div");
+  if(c>cur)div.textContent=`${m.n||"Magia"}: mana insuficiente (${cur}/${c})`;
+  else{S.f.mana=cur-c;save();fillInputs();div.textContent=`${m.n||"Magia"}: −${c} PM (restam ${cur-c})`+rollExpr(danoUp(m))}
+  $("log").prepend(div);while($("log").children.length>8)$("log").lastChild.remove()}
+ if(d){S.m.splice(+d.dataset.del,1);save();spells()}});
+const MTXT=`Raio de Fogo;0;1d10;Lança uma chama contra um alvo à distância.
+Rajada Mística;0;1d10;Feixe de energia arcana contra um alvo.
+Toque Gélido;0;1d8;Mão espectral que causa dano necrótico e impede a cura do alvo.
+Zombaria Dolorosa;0;1d4;Insulto mágico que fere a mente e atrapalha o alvo.
+Rajada de Veneno;0;1d12;Nuvem de gás venenoso contra um alvo próximo.
+Chama Sagrada;0;1d8;Luz divina que fere um alvo sem que a armadura ajude.
+Mão Mágica;0;;Mão espectral que move objetos leves à distância.
+Luz;0;;Faz um objeto brilhar por uma hora.
+Prestidigitação;0;;Pequenos truques: limpar, acender, aromas e sons.
+Ilusão Menor;0;;Cria um som ou uma imagem simples.
+Orientação;0;;Um aliado ganha um bônus pequeno em um teste.
+Estabilizar;0;;Estabiliza uma criatura à beira da morte.
+Lanças Fantasmagóricas;1;1d6;Ao memorizar um alvo (seja de qualquer distância ele esteja), 1d4 + 2 lanças
+Mãos Fantasmagóricas;1;;Duas mãos fantasmagóricas grandes saem do corpo. Curto alcance, podem
+Mísseis Mágicos;1;3d4;Dardos de força que sempre acertam.
+Orbe Cromático;1;3d8;Esfera de energia de um elemento à escolha.
+Mãos Flamejantes;1;3d6;Cone de chamas diante de quem conjura.
+Onda Trovejante;1;2d8;Explosão sonora que empurra e fere quem está perto.
+Golpe Divino;1;2d8;Ataque imbuído de energia sagrada.
+Infligir Ferimentos;1;3d10;Toque necrótico que causa grande dano.
+Cura Ferimentos;1;1d8;Toque que restaura pontos de vida.
+Palavra Curativa;1;1d4;Cura à distância, de uso rápido.
+Escudo Arcano;1;;Barreira que aumenta a defesa por um instante.
+Armadura Arcana;1;;Aura protetora que melhora a defesa.
+Bênção;1;;Aliados somam um dado extra em ataques e testes.
+Sono;1;;Faz criaturas fracas adormecerem.
+Enfeitiçar Pessoa;1;;Faz um humanoide tratar você como amigo.
+Comando;1;;Ordena uma palavra simples que o alvo obedece.
+Detectar Magia;1;;Percebe a presença de magia por perto.
+Disfarçar-se;1;;Muda a sua aparência por uma hora.
+Raio Ardente;2;2d6;Três raios de fogo contra um ou mais alvos.
+Esfera Flamejante;2;2d6;Bola de fogo móvel que queima quem encosta.
+Flecha Ácida;2;4d4;Flecha de ácido que fere por duas rodadas.
+Arma Espiritual;2;1d8;Arma flutuante que ataca por você.
+Prece de Cura;2;2d8;Cura vários aliados durante um breve ritual.
+Teia;2;;Fios pegajosos que prendem criaturas na área.
+Invisibilidade;2;;Torna a criatura invisível até que ela ataque.
+Passo Nebuloso;2;;Teletransporte curto de uma ação.
+Imobilizar Pessoa;2;;Paralisa um humanoide por algum tempo.
+Silêncio;2;;Zona onde nenhum som passa.
+Restauração Menor;2;;Remove uma doença ou condição leve.
+Bola de Fogo;3;8d6;Explosão de chamas em uma grande área.
+Relâmpago;3;8d6;Linha de eletricidade que atravessa vários alvos.
+Espíritos Guardiões;3;3d8;Espíritos protegem uma área e ferem os inimigos.
+Contramágica;3;;Interrompe uma magia que está sendo conjurada.
+Dissipar Magia;3;;Encerra efeitos mágicos sobre um alvo.
+Voo;3;;Concede deslocamento aéreo por um tempo.
+Aceleração;3;;Dobra a velocidade de um aliado.
+Lentidão;3;;Reduz o deslocamento e as ações de criaturas.
+Clarividência;3;;Observa um local distante.
+Reviver;3;;Traz de volta uma criatura morta há pouco tempo.`;
+const MCAT=MTXT.split("\n").map(l=>{const p=l.split(";");return{n:p[0],l:+p[1],dano:p[2]||"",d:p[3]||""}});
+const MCUSTO=[1,3,6,10];
+let ml="Todos",mq="";
+const mlab=l=>l===0?"Truques":"Nível "+l;
+function renderM(){const gs=["Todos",...[...new Set(MCAT.map(i=>i.l))].sort().map(mlab)];
+ $("mgrp").innerHTML=gs.map(x=>`<button class="${x===ml?"":"g"}" data-mg="${x}">${x}</button>`).join("");
+ const l=MCAT.filter(i=>(ml==="Todos"||mlab(i.l)===ml)&&(i.n+i.d).toLowerCase().includes(mq));
+ $("mlist").innerHTML=l.map(i=>`<div class="wi"><div><b>${esc(i.n)}</b><small>${mlab(i.l)} · ${MCUSTO[i.l]} PM${i.dano?" · "+esc(i.dano):""} · ${esc(i.d)}</small></div><button data-madd="${MCAT.indexOf(i)}" title="Adicionar">+</button></div>`).join("")||`<div style="color:var(--mu)">Nenhuma magia encontrada.</div>`}
+$("addSp").onclick=()=>{const c=$("mcat"),a=c.style.display==="none";c.style.display=a?"block":"none";if(a)renderM()};
+document.addEventListener("click",e=>{const t=e.target.closest("[data-up]");if(!t)return;const m=S.m[+t.dataset.up];m.up=Math.max(0,Math.min(10,(+m.up||0)+ +t.dataset.ud));save();spells()});
+$("mclose").onclick=()=>{$("mcat").style.display="none"};
+$("mq").oninput=e=>{mq=e.target.value.toLowerCase();renderM()};
+$("mcustom").onclick=()=>{S.m.push({n:"",l:"",c:"",dano:"",d:""});save();spells();$("mcat").style.display="none"};
+document.addEventListener("click",e=>{const g=e.target.closest("[data-mg]"),b=e.target.closest("[data-madd]");
+ if(g){ml=g.dataset.mg;renderM()}
+ if(b){const i=MCAT[+b.dataset.madd];S.m.push({n:i.n,l:i.l,c:MCUSTO[i.l],dano:i.dano,d:i.d});save();spells();$("mcat").style.display="none"}});
+function am(m,i){if(m.mx===undefined)return"";return `<div class="am"><label>Munição</label><input type="number" min="0" data-w="${i}" data-p="mc" value="${esc(m.mc)}"><span>/</span><input type="number" min="0" data-w="${i}" data-p="mx" value="${esc(m.mx)}"><button class="${(+m.mc||0)<=0?"":"g"}" data-wre="${i}">Recarregar</button></div>`}
+function logAdd(t){const d=document.createElement("div");d.textContent=t;$("log").prepend(d);while($("log").children.length>8)$("log").lastChild.remove()}
+function weapons(){$("weapons").innerHTML=S.w.map((m,i)=>`<div class="sp wp"><div><label>Arma</label><input data-w="${i}" data-p="n" value="${esc(m.n)}"></div><div><label>Dano</label><input data-w="${i}" data-p="dano" placeholder="1d8+2" value="${esc(m.dano)}"></div><textarea data-w="${i}" data-p="d" placeholder="Descrição / propriedades">${esc(m.d)}</textarea>${am(m,i)}<div class="ac"><button data-wuse="${i}"${m.mx!==undefined&&m.mx!==""&&(+m.mc||0)<=0?" disabled":""}>Atacar</button><button class="g" data-wdel="${i}">Remover</button></div></div>`).join("")}
+document.addEventListener("input",e=>{const i=e.target.dataset&&e.target.dataset.w;if(i!==undefined&&S.w[i]){S.w[i][e.target.dataset.p]=e.target.value;save()}});
+document.addEventListener("click",e=>{const u=e.target.closest("[data-wuse]"),d=e.target.closest("[data-wdel]"),r=e.target.closest("[data-wre]"),ad=e.target.closest("[data-wam]");
+ if(u){const m=S.w[u.dataset.wuse],div=document.createElement("div"),tr=m.mx!==undefined&&m.mx!=="",cur=+m.mc||0;
+  if(tr&&cur<=0)div.textContent=`${m.n||"Arma"}: sem munição, recarregue`;
+  else{let ex="";if(tr){m.mc=cur-1;save();weapons();ex=` (munição ${m.mc}/${+m.mx||0})`}
+   div.textContent=`${m.n||"Arma"}`+(rollExpr(m.dano)||" · sem dano definido")+ex}
+  $("log").prepend(div);while($("log").children.length>8)$("log").lastChild.remove()}
+ if(d){S.w.splice(+d.dataset.wdel,1);save();weapons()}
+ if(r){const m=S.w[r.dataset.wre];m.mc=+m.mx||0;save();weapons();logAdd(`${m.n||"Arma"} recarregada (${m.mc}/${m.mc})`)}
+ if(ad){const m=S.w[ad.dataset.wam];m.mx=10;m.mc=10;save();weapons()}});
+const WTXT=`#Simples corpo a corpo
+Adaga;2 po;1d4 perfurante;0,5;Acuidade, leve, arremesso (6/18)
+Azagaia;5 pp;1d6 perfurante;1;Arremesso (9/36)
+Bordão;2 pp;1d6 concussão;2;Versátil (1d8)
+Clava Grande;2 pp;1d8 concussão;5;Pesada, duas mãos
+Foice Curta;1 po;1d4 cortante;1;Leve
+Lança;1 po;1d6 perfurante;1,5;Arremesso (6/18), versátil (1d8)
+Maça;5 po;1d6 concussão;2;
+Machadinha;5 po;1d6 cortante;1;Leve, arremesso (6/18)
+Martelo Leve;2 po;1d4 concussão;1;Leve, arremesso (6/18)
+Porrete;1 pp;1d4 concussão;1;Leve
+#Simples à distância
+Arco Curto;25 po;1d6 perfurante;1;Munição (24/96), duas mãos
+Besta Leve;25 po;1d8 perfurante;2,5;Munição (24/96), recarga, duas mãos
+Dardo;5 pc;1d4 perfurante;0,1;Acuidade, arremesso (6/18)
+Funda;1 pp;1d4 concussão;;Munição (9/36)
+#Marciais corpo a corpo
+Alabarda;20 po;1d10 cortante;3;Pesada, alcance, duas mãos
+Cimitarra;25 po;1d6 cortante;1,5;Acuidade, leve
+Chicote;2 po;1d4 cortante;1,5;Acuidade, alcance
+Espada Curta;10 po;1d6 perfurante;1;Acuidade, leve
+Espada Grande;50 po;2d6 cortante;3;Pesada, duas mãos
+Espada Longa;15 po;1d8 cortante;1,5;Versátil (1d10)
+Glaive;20 po;1d10 cortante;3;Pesada, alcance, duas mãos
+Lança de Montaria;10 po;1d12 perfurante;3;Alcance, especial
+Lança Longa;5 po;1d10 perfurante;4;Pesada, alcance, duas mãos
+Maça Estrela;15 po;1d8 perfurante;2;
+Machado Grande;30 po;1d12 cortante;3,5;Pesada, duas mãos
+Machado de Batalha;10 po;1d8 cortante;2;Versátil (1d10)
+Malho;10 po;2d6 concussão;5;Pesada, duas mãos
+Mangual;10 po;1d8 concussão;1;
+Martelo de Guerra;15 po;1d8 concussão;1;Versátil (1d10)
+Picareta de Guerra;5 po;1d8 perfurante;1;
+Rapieira;25 po;1d8 perfurante;1;Acuidade
+Tridente;5 po;1d6 perfurante;2;Arremesso (6/18), versátil (1d8)
+#Marciais à distância
+Arco Longo;50 po;1d8 perfurante;1;Munição (45/180), pesada, duas mãos
+Besta de Mão;75 po;1d6 perfurante;1,5;Munição (9/36), leve, recarga
+Besta Pesada;50 po;1d10 perfurante;4,5;Munição (30/120), pesada, recarga, duas mãos
+Rede;1 po;;1,5;Especial, arremesso (1,5/4,5)
+Zarabatana;10 po;1 perfurante;0,5;Munição (7,5/30), recarga`;
+const WCAT=(()=>{let g="",o=[];WTXT.split("\n").forEach(l=>{if(l[0]=="#"){g=l.slice(1);return}const p=l.split(";");o.push({n:p[0],c:p[1],d:p[2],k:p[3],p:p[4],g})});return o})();
+let wg="Todas",wq="";
+function wcat(){
+ const gs=["Todas",...new Set(WCAT.map(i=>i.g))];
+ $("wgrp").innerHTML=gs.map(x=>`<button class="${x===wg?"":"g"}" data-wg="${esc(x)}">${esc(x)}</button>`).join("");
+ const l=WCAT.filter(i=>(wg==="Todas"||i.g===wg)&&(i.n+(i.d||"")+(i.p||"")+i.g).toLowerCase().includes(wq));
+ $("wlist").innerHTML=l.map(i=>`<div class="wi"><div><b>${esc(i.n)}</b><small>${esc(i.d||"sem dano")} · ${esc(i.k||"–")} kg · ${esc(i.c||"")}${i.p?" · "+esc(i.p):""}</small></div><button data-wadd="${WCAT.indexOf(i)}" title="Adicionar">+</button></div>`).join("")||`<div style="color:var(--mu)">Nenhuma arma encontrada.</div>`}
+$("addWp").onclick=()=>{const c=$("wcat");const abrir=c.style.display==="none";c.style.display=abrir?"block":"none";if(abrir)wcat()};
+$("wclose").onclick=()=>{$("wcat").style.display="none"};
+$("wq").oninput=e=>{wq=e.target.value.toLowerCase();wcat()};
+$("wcustom").onclick=()=>{S.w.push({n:"",dano:"",d:""});save();weapons();$("wcat").style.display="none"};
+$("wcustom2").onclick=()=>{S.w.push({n:"",dano:"",d:"",mx:20,mc:20});save();weapons();$("wcat").style.display="none"};
+document.addEventListener("click",e=>{const g=e.target.closest("[data-wg]"),b=e.target.closest("[data-wadd]");
+ if(g){wg=g.dataset.wg;wcat()}
+ if(b){const i=WCAT[+b.dataset.wadd],dm=(i.d||"").match(/^(\S+)\s*(.*)$/)||[],tipo=dm[2]?dm[2][0].toUpperCase()+dm[2].slice(1):"";
+  const nw={n:i.n,dano:dm[1]||"",d:[tipo,i.p||"",i.k?i.k+" kg":"",i.c||""].filter(Boolean).join(" · ")};if(/distância/i.test(i.g)){nw.mx=20;nw.mc=20}S.w.push(nw);
+  save();weapons();$("wcat").style.display="none"}});
+document.addEventListener("change",e=>{const k=e.target.dataset&&e.target.dataset.b;if(k){S.b[k]=e.target.value;save()}});
+$("roll").onclick=()=>rollDice(Math.max(1,+$("dq").value||1),+$("dd").value,+$("db").value||0,"");
+
+$("exp").onclick=()=>{const nome=(S.f.nome||"ficha").trim().replace(/[^\p{L}\p{N}\-]+/gu,"-")||"ficha";
+ const blob=new Blob([JSON.stringify(S,null,2)],{type:"application/json"}),a=document.createElement("a");
+ a.href=URL.createObjectURL(blob);a.download=`ficha-${nome}.json`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000)};
+$("imp").onclick=()=>$("file").click();
+$("file").onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();
+ r.onload=()=>{try{const o=JSON.parse(r.result);if(o&&o.f){const id="p"+Date.now();DB.list[id]=Object.assign({f:{},a:{},s:{}},o);DB.cur=id;S=DB.list[id];save();build();slots()}else alert("Arquivo inválido.")}catch(x){alert("Arquivo inválido.")}};
+ r.readAsText(f);e.target.value=""};
+
+const ARM={Acolchoada:[11,9],Couro:[11,9],"Couro batido":[12,9],"Gibão de peles":[12,2],"Camisa de malha":[13,2],Brunea:[14,2],Peitoral:[14,2],"Meia-armadura":[15,2],"Cota de anéis":[14,0],"Cota de malha":[16,0],Talas:[17,0],Placas:[18,0]};
+function defesa(){const a=ARM[S.f.armadura],agi=+S.a.AGI||0;return (a?a[0]:10)+Math.min(agi,a?a[1]:9)+(S.f.escudo==="1"?2:0)}
+function ui2(){const s=$("armSel");if(s.options.length)return;
+ s.innerHTML='<option value="">Sem armadura (10 + AGI)</option>'+Object.entries(ARM).map(([n,v])=>`<option value="${n}">${n} (${v[0]}${v[1]===0?"":" + AGI"+(v[1]<9?" máx. "+v[1]:"")})</option>`).join("")}
+const COND=["Amedrontado","Atordoado","Caído","Cego","Surdo","Enfeitiçado","Envenenado","Sangrando","Queimando","Paralisado","Agarrado","Lento","Exausto","Inconsciente"];
+function conds(){$("conds").innerHTML=COND.map(x=>`<button class="${S.c[x]?"":"g"}" data-cd="${x}">${x}</button>`).join("")}
+const ETXT=`#Aventura
+Ábaco;2 po;1
+Ácido (vidro);25 po;0,5
+Água benta (frasco);25 po;0,5
+Algemas;2 po;2
+Algibeira;5 pp;0,5
+Aljava;1 po;0,5
+Ampulheta;25 po;0,5
+Antídoto (vidro);50 po;
+Apito de advertência;5 po;0,5
+Ariete portátil;4 po;17,5
+Armadilha de caça;5 po;12,5
+Arpéu;2 po;2
+Balança de mercador;5 po;1,5
+Balde;5 pc;1
+Barril;2 po;35
+Baú;5 po;12,5
+Bolsa de componentes;25 po;1
+Caixa de Fogo;5 po;0,5
+Caneca;2 pc;0,5
+Caneta tinteiro;2 pc;
+Cantil;2 po;2,5
+Cesto;4 pp;1
+Cobertor de inverno;5 pp;1,5
+Corda de cânhamo (15 m);1 po;5
+Corda de seda (15 m);10 po;2,5
+Corrente (3 m);5 po;5
+Equipamento de pescaria;1 po;2
+Escada (3 m);1 pp;12,5
+Esferas (sacola com 1.000);1 po;1
+Espelho de aço;5 po;0,25
+Estrepes (bolsa com 20);1 po;1
+Fechadura;10 po;0,5
+Fogo alquímico;50 po;0,5
+Frasco;2 pc;1
+Garrafa de vidro;1 po;1
+Giz (1 peça);1 pc;
+Grimório;50 po;1
+Jarra;4 pc;2
+Kit de escalada;25 po;6
+Kit de primeiros-socorros;5 po;1,5
+Lâmpada;5 pp;0,5
+Lanterna coberta;5 po;1
+Lanterna furta-fogo;10 po;1
+Lente de aumento;100 po;
+Livro;25 po;2,5
+Luneta;1.000 po;0,5
+Manto;1 po;2
+Marreta;2 po;5
+Martelo;1 po;1,5
+Mochila;2 po;2,5
+Óleo (frasco);1 pp;0,5
+Pá;2 po;2,5
+Panela de ferro;2 po;5
+Papel (uma folha);2 pp;
+Parafina;5 pp;
+Pé de cabra;2 po;2,5
+Pedra de amolar;1 pc;
+Perfume (frasco);5 po;
+Pergaminho (uma folha);1 pp;
+Picareta de minerador;2 po;5
+Piton;5 pc;
+Poção de cura;50 po;0,25
+Porta mapas ou pergaminhos;1 po;0,5
+Porta virotes;1 po;0,5
+Pregos de ferro (10);1 po;2,5
+Rações de viagem (1 dia);5 pp;1
+Roldana e polia;1 po;2,5
+Sabão;2 pc;
+Saco;1 pc;0,25
+Saco de dormir;1 po;3,5
+Sinete;5 pp;
+Sino;1 po;
+Tenda para duas pessoas;2 po;10
+Tocha;1 pc;0,5
+Tinta (frasco de 30 ml);10 po;
+Vara (3 metros);5 pc;3,5
+Vela;1 pc;
+Veneno básico (frasco);100 po;
+#Munição
+Balas de Funda (20);4 pc;0,75
+Flechas (20);1 po;0,5
+Virotes (20);1 po;0,75
+Zarabatana (50);1 po;0,5
+#Foco arcano
+Bastão;10 po;1
+Cajado;5 po;2
+Cristal;10 po;0,5
+Orbe;20 po;1,5
+Varinha;10 po;0,5
+#Foco druídico
+Cajado de madeira;5 po;2
+Ramo de visco;1 po;
+Totem;1 po;
+Varinha de teixo;10 po;0,5
+#Símbolo sagrado
+Amuleto;5 po;0,5
+Emblema;5 po;
+Relicário;5 po;1
+#Roupas
+Robes;1 po;2
+Roupas comuns;5 pp;1,5
+Roupas de viajante;2 po;2
+Roupas de entretenimento;5 po;2
+Roupas finas;15 po;3`;
+const ECAT=(()=>{let g="",o=[];ETXT.split("\n").forEach(l=>{if(!l.trim())return;if(l[0]=="#"){g=l.slice(1);return}const p=l.split(";");o.push({n:p[0],c:p[1]||"",w:p[2]||"",g})});return o})();
+let eg="Todos",eqs_="";
+const pw=s=>parseFloat(String(s||"0").replace(",","."))||0;
+function ecat(){const gs=["Todos",...new Set(ECAT.map(i=>i.g))];
+ $("eqgrp").innerHTML=gs.map(x=>`<button class="${x===eg?"":"g"}" data-eg="${esc(x)}">${esc(x)}</button>`).join("");
+ const l=ECAT.filter(i=>(eg==="Todos"||i.g===eg)&&(i.n+i.g).toLowerCase().includes(eqs_));
+ $("eqlist").innerHTML=l.map(i=>`<div class="wi"><div><b>${esc(i.n)}</b><small>${esc(i.c)}${i.w?" · "+esc(i.w)+" kg":""}</small></div><button data-eadd="${ECAT.indexOf(i)}" title="Adicionar">+</button></div>`).join("")||`<div style="color:var(--mu)">Nada encontrado.</div>`}
+function eqs(){$("eqs").innerHTML=(S.q.length?`<div class="eqr" style="color:var(--mu);font-size:12px"><span>Item</span><span>Qtd</span><span>Kg (un.)</span><span></span></div>`:"")+S.q.map((m,i)=>`<div class="eqr"><input data-q="${i}" data-p="n" value="${esc(m.n)}"><input type="number" min="1" data-q="${i}" data-p="q" value="${esc(m.q)}"><input inputmode="decimal" data-q="${i}" data-p="w" value="${esc(m.w)}"><button class="g" data-edel="${i}">✕</button></div>`).join("");eqTot()}
+function eqTot(){let t=0;S.q.forEach(m=>{t+=pw(m.w)*(+m.q||0)});$("eqpeso").textContent=(Math.round(t*100)/100).toLocaleString("pt-BR")}
+function jn(){$("jn").innerHTML=S.j.map((m,i)=>`<div class="sp jn"><div><label>Título</label><input data-j="${i}" data-p="t" value="${esc(m.t)}"></div><div><label>Data</label><input type="date" data-j="${i}" data-p="dt" value="${esc(m.dt)}"></div><textarea data-j="${i}" data-p="x" placeholder="O que aconteceu na sessão…">${esc(m.x)}</textarea><div class="ac"><button class="g" data-jdel="${i}">Remover</button></div></div>`).join("")}
+function slots(){$("slot").innerHTML=Object.keys(DB.list).map(id=>`<option value="${id}"${id===DB.cur?" selected":""}>${esc(DB.list[id].f.nome||"Sem nome")}</option>`).join("")}
+document.addEventListener("input",e=>{const t=e.target.dataset||{};
+ if(t.q!==undefined&&S.q[t.q]){S.q[t.q][t.p]=e.target.value;save();if(t.p!=="n")eqTot()}
+ if(t.j!==undefined&&S.j[t.j]){S.j[t.j][t.p]=e.target.value;save()}});
+document.addEventListener("click",e=>{const T=s=>e.target.closest(s);let x;
+ if(x=T("[data-cd]")){S.c[x.dataset.cd]=!S.c[x.dataset.cd];save();conds()}
+ if(x=T("[data-eg]")){eg=x.dataset.eg;ecat()}
+ if(x=T("[data-eadd]")){const i=ECAT[+x.dataset.eadd],f=S.q.find(m=>m.n===i.n);if(f)f.q=(+f.q||0)+1;else S.q.push({n:i.n,w:i.w,q:1});save();eqs();$("eqcat").style.display="none"}
+ if(x=T("[data-edel]")){S.q.splice(+x.dataset.edel,1);save();eqs()}
+ if(x=T("[data-jdel]")){S.j.splice(+x.dataset.jdel,1);save();jn()}});
+$("addEq").onclick=()=>{const c=$("eqcat"),a=c.style.display==="none";c.style.display=a?"block":"none";if(a)ecat()};
+$("eqclose").onclick=()=>{$("eqcat").style.display="none"};
+$("eqq").oninput=e=>{eqs_=e.target.value.toLowerCase();ecat()};
+$("eqcustom").onclick=()=>{S.q.push({n:"",w:"",q:1});save();eqs();$("eqcat").style.display="none"};
+$("addJn").onclick=()=>{S.j.unshift({t:"",dt:new Date().toISOString().slice(0,10),x:""});save();jn()};
+$("desc").onclick=()=>{S.f.pv=pvMax();S.f.san=sanMax();S.f.mana=manaMax();save();fillInputs();logAdd(`Descanso: PV ${S.f.pv}, SAN ${S.f.san}, PM ${S.f.mana}`)};
+$("slot").onchange=e=>{save();DB.cur=e.target.value;S=DB.list[DB.cur];build();slots()};
+$("novo").onclick=()=>{const id="p"+Date.now();DB.list[id]={f:{},a:{},s:{}};DB.cur=id;S=DB.list[id];save();build();slots()};
+$("del").onclick=()=>{if(!confirm("Excluir este personagem?"))return;delete DB.list[DB.cur];let k=Object.keys(DB.list);if(!k.length){const id="p"+Date.now();DB.list[id]={f:{},a:{},s:{}};k=[id]}DB.cur=k[0];S=DB.list[DB.cur];save();build();slots()};
+
+const PH="data:image/svg+xml;utf8,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" fill="#140d0c"/><circle cx="12" cy="9" r="4" fill="#8f6b22"/><path d="M4 22c0-5 4-8 8-8s8 3 8 8z" fill="#8f6b22"/></svg>');
+function bars(){[["pv","pvmax","bVida"],["san","sanmax","bSan"],["mana","manamax","bMana"]].forEach(([c,m,b])=>{const mx=+$(m).value||0,cu=+S.f[c]||0;$(b).style.setProperty("--p",(mx?Math.max(0,Math.min(100,cu/mx*100)):0)+"%")});
+ const a=ARM[S.f.armadura],agi=+S.a.AGI||0;$("defTxt").textContent=`= ${a?a[0]+" (armadura)":"10 (base)"} + AGI ${Math.min(agi,a?a[1]:9)}${S.f.escudo==="1"?" + escudo 2":""}`;
+ $("foto").src=S.f.foto||PH;$("fotoDel").style.display=S.f.foto?"":"none";$("fotoBtn").textContent=S.f.foto?"Trocar":"Adicionar foto"}
+const _t=totals;totals=function(){_t();bars()};
+const _f=fillInputs;fillInputs=function(){_f();bars()};
+document.addEventListener("click",e=>{const b=e.target.closest("[data-bar]");if(!b)return;const c=b.dataset.bar,m={pv:"pvmax",san:"sanmax",mana:"manamax"}[c],mx=+$(m).value||0;let v=(+S.f[c]||0)+ +b.dataset.step;v=Math.max(0,mx?Math.min(mx,v):v);S.f[c]=v;save();fillInputs()});
+$("fotoIn").onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const c=document.createElement("canvas");c.width=c.height=192;const x=c.getContext("2d"),s=Math.min(im.width,im.height);x.drawImage(im,(im.width-s)/2,(im.height-s)/2,s,s,0,0,192,192);S.f.foto=c.toDataURL("image/jpeg",.75);save();bars()};im.src=r.result};r.readAsDataURL(f);e.target.value=""};
+$("fotoBtn").onclick=()=>$("fotoIn").click();
+$("fotoDel").onclick=()=>{delete S.f.foto;save();bars()};
+let ES={peer:null,conn:null,want:false,t:null,tx:null};
+const escSt=t=>{$("escSt").textContent=t};
+function escSnap(foto){const f=S.f,o={nome:f.nome||"Sem nome",raca:f.raca||"",classe:f.classe||"",nivel:+f.nivel||1,pv:+f.pv||0,pvmax:+$("pvmax").value||0,san:+f.san||0,sanmax:+$("sanmax").value||0,mana:+f.mana||0,manamax:+$("manamax").value||0,defesa:+$("defesa").value||0,at:S.a,conds:Object.keys(S.c||{}).filter(k=>S.c[k])};if(foto)o.foto=f.foto||"";return o}
+function escSend(full){const c=ES.conn;if(c&&c.open)c.send({t:full?"hello":"state",id:DB.cur,ficha:escSnap(full)})}
+function escSync(){clearTimeout(ES.tx);ES.tx=setTimeout(()=>escSend(false),500)}
+function escLogAdd(e){const d=document.createElement("div");d.textContent=`${e.n}: ${e.x}`;$("escLog").prepend(d);while($("escLog").children.length>15)$("escLog").lastChild.remove()}
+function escRecv(d){if(!d)return;
+ if(d.t==="log")escLogAdd(d.e);
+ if(d.t==="hist"){$("escLog").innerHTML="";d.list.slice().reverse().forEach(escLogAdd)}
+ if(d.t==="set"&&["pv","san","mana"].includes(d.k)){S.f[d.k]=d.v;save();fillInputs();escSend(false)}}
+function escStop(){ES.want=false;clearTimeout(ES.t);try{ES.peer&&ES.peer.destroy()}catch(e){}ES.peer=ES.conn=null;escSt("Desconectado");$("escBtn").textContent="Conectar"}
+function escGo(){const cod=$("escCod").value.trim().toUpperCase();if(!cod)return escSt("Digite o código da sala.");
+ try{localStorage.setItem("escudo-cod",cod)}catch(e){}
+ if(!window.Peer)return escSt("A biblioteca de conexão não carregou. Esta função precisa de internet e da ficha publicada no GitHub.");
+ ES.want=true;$("escBtn").textContent="Desconectar";escSt("Conectando…");
+ try{ES.peer&&ES.peer.destroy()}catch(e){}
+ const retry=()=>{if(!ES.want)return;clearTimeout(ES.t);ES.t=setTimeout(escGo,5000)};
+ const p=ES.peer=new Peer();
+ p.on("open",()=>{const c=ES.conn=p.connect("rpgescudo-"+cod,{reliable:true});
+  c.on("open",()=>{escSt("Conectado à sala "+cod);escSend(true)});
+  c.on("data",escRecv);
+  c.on("close",()=>{escSt("Conexão perdida, tentando de novo…");retry()});
+  c.on("error",()=>retry())});
+ p.on("error",e=>{escSt(e.type==="peer-unavailable"?"Sala não encontrada. Confira o código.":"Erro: "+e.type);retry()})}
+$("escBtn").onclick=()=>ES.want?escStop():escGo();
+try{$("escCod").value=localStorage.getItem("escudo-cod")||""}catch(e){}
+const _sv=save;save=function(){_sv();escSync()};
+new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(n=>{if(n.nodeType===1&&ES.conn&&ES.conn.open)ES.conn.send({t:"roll",id:DB.cur,n:S.f.nome||"Jogador",x:n.textContent})}))).observe($("log"),{childList:true});
+loadDB();build();slots();
+</script>
+</body>
+</html>
